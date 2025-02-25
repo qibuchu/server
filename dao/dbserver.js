@@ -4,6 +4,7 @@ var Friend = dbmodel.model('Friend');
 var Group = dbmodel.model('Group');
 var GroupUser = dbmodel.model('Groupuser');
 var Message = dbmodel.model('Message');
+var GroupMsg = dbmodel.model('GroupMsg');
 //引入加密文件
 const bcrypt = require('../dao/bcrypt');
 
@@ -884,6 +885,58 @@ exports.updateGroupMsg = function(data, res){
     })
 } 
 
+//群最后通讯时间
+exports.upGroupLastTime = function(data)
+{
+    let wherestr = {$or:[{'userID':data.uid,'friendID':data.gid}]};
+    let updatestr = {'lastTime':new Date()};
+
+    Group.updateMany(wherestr,updatestr,function(err,result){
+        if(err){
+           // res.status(500).send((results[0].id).toString());
+           console.log('更新群最后通讯时间出错');
+          // res.send({status:500});
+        }else{
+            //res.status(200).send((results[0].id).toString());
+            //res.send({status:200});
+        }
+    })
+}
+
+
+//添加群消息
+exports.insertGroupMsg = function(uid,gid,msg,type,res){
+    let data = {
+        userID: uid,
+        groupID: gid,
+        message: msg,
+        types:type,
+        time: new Date(),
+        state: 1,
+    }
+    console.log(data)
+
+    let groupmessage = new GroupMsg(data);
+    //console.log(groupmessage,'message')
+
+    groupmessage.save(function(err,result){
+        if(err){
+           if(res){
+            res.send({status:500})
+           }
+           //console.log(err)
+            //res.send({status:500});
+
+        }else{
+            if(res){
+                res.send({status:200,result})
+               }
+            //res.send({status:200});
+            console.log('群message保存成功')
+        }
+    }) 
+}
+
 //消息操作
 //分页获取数据一对一聊天数据
 exports.msg = function(data,res){
@@ -925,3 +978,44 @@ exports.msg = function(data,res){
     })
 }
 
+//分页获取数据群聊天数据
+exports.gmsg = function(data,res){
+    var skipNum = data.nowPage*data.pageSize;//跳过的条数
+
+    
+    let query = GroupMsg.find();
+        //查询条件
+    query.where({'userID':data.uid,'groupID':data.gid});
+
+    //排序方式 最有通讯时间倒序排列
+    query.sort({'time':- 1});
+
+        //查找frindeID 关联的user对象
+        query.populate('userID');
+        //跳过条数
+        query.skip(skipNum);
+        //一页条数
+        query.limit(data.pageSize);
+        //查询结果
+        query.exec().then(function(e){
+            console.log(e,'群聊天数据')
+            let result = e.map(function(ver){
+                console.log(ver._id,'群聊天数据')
+                return {
+                    id:ver._id,
+                    message: ver.message,
+                    types:ver.types,
+                    time:ver.time,
+                    fromId:ver.userID._id,
+                    imgurl:ver.userID.imgurl,
+                    }
+        
+                })
+                //console.log(res)
+                res.send({status:200,result});
+                console.log(result)
+                //console.log(result[2].time,'时间')
+            }).catch(function(err){
+        //res.send({status:500});
+    })
+}

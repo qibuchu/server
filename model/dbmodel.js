@@ -62,7 +62,8 @@ var GroupMessageSchema = new Schema({
     groupID: {type: Schema.Types.ObjectId,ref:'User'},               //用户ID
     userID: {type: Schema.Types.ObjectId,ref:'User'},             //好友ID
     message: {type: String},                                        //内容
-    types: {type: String},                                          //类型                                            
+    types: {type: String},
+    time: {type: Date},                                             //发送时间                                          //类型                                            
     state:{type:Number},                                            //消息状态（0未读，1已读）
 });
 

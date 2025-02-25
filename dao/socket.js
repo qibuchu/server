@@ -16,13 +16,13 @@ module.exports = function(io){
         });
 
         socket.on('msg',(msg,fromid,toid)=>{
-          console.log(fromid,toid,'17')
-          console.log(msg.message,'18')
-          dbserver.upFriendLastTime({uid:fromid,fid:toid});
-          dbserver.insertMsg(fromid,toid,msg.message,msg.types);
-          console.log(users,'大萨达1')
-          console.log(toid,'大萨达2')
-          console.log(users[toid],'大萨达3')
+          //console.log(fromid,toid,'17')
+          //console.log(msg.message,'18')
+           dbserver.upFriendLastTime({uid:fromid,fid:toid});
+           dbserver.insertMsg(fromid,toid,msg.message,msg.types);
+         // console.log(users,'大萨达1')
+          //console.log(toid,'大萨达2')
+          //console.log(users[toid],'大萨达3')
           //users[toid]=toid
           //发送给对方
           if(users[toid]){
@@ -40,10 +40,13 @@ module.exports = function(io){
         socket.join(data)
       });
       //接收群消息
-      socket.on('groupMsg',function(msg,fromid,gid,name,img){
-        console.log(gid,'gid')
-        socket.to(gid).emit('groupMsg',msg,fromid,gid,name,img);
-           socket.emit('groupmsg',msg,fromid,name,img,1)
+      socket.on('groupMsg',function(msg,fromid,gid,name,img){//msg:消息内容，fromid:发送者id，gid:群id，name:群名字，img:群头像
+        //console.log(gid,'gid')
+        dbserver.upGroupLastTime({uid:fromid,fid:gid});
+        dbserver.insertGroupMsg(fromid,gid,msg.message,msg.types);
+        socket.to(gid).emit('groupmsg',msg,fromid,gid,name,img,0);
+        console.log('触发群广播')
+           socket.emit('groupmsg',msg,fromid,gid,name,img,1)
       })
       //告知离开当前聊天页面
       socket.on('leaveChatr',function(uid,fid){
