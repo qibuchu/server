@@ -36,19 +36,19 @@ module.exports = function(io){
         });
 
        // 加入群
-      // socket.on('group',function(data){
-      //   socket.join(data)
-      // });
-      // //接收群消息
-      // socket.on('groupMsg',function(msg,fromid,gid,name,img){
-      //   console.log(gid,'gid')
-      //   socket.to(gid).emit('groupMsg',msg,fromid,gid,name,img);
-      //      socket.emit('groupmsg',msg,fromid,name,img,1)
-      // })
-      // //告知离开当前聊天页面
-      // socket.on('leaveChatr',function(uid,fid){
-      //   socket.emit('leavechatr',uid,fid)
-      // })
+      socket.on('group',function(data){
+        socket.join(data)
+      });
+      //接收群消息
+      socket.on('groupMsg',function(msg,fromid,gid,name,img){
+        console.log(gid,'gid')
+        socket.to(gid).emit('groupMsg',msg,fromid,gid,name,img);
+           socket.emit('groupmsg',msg,fromid,name,img,1)
+      })
+      //告知离开当前聊天页面
+      socket.on('leaveChatr',function(uid,fid){
+        socket.emit('leavechatr',uid,fid)
+      })
 
 
         //用户离开
