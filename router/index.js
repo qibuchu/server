@@ -158,6 +158,9 @@ app.post('/chat/msg',(req,res) => {
     chat.msg(req,res);
 })
 
+app.post('/chat/gmsg',(req,res) => {
+    chat.gmsg(req,res);
+})
 //建群页
 //建群
 app.post('/group/creategroup', (req, res) => {
