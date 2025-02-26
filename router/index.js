@@ -70,7 +70,7 @@ app.post('/search/group',(req,res) =>{
 
 
 //判断是否在群内
-app.post('/search/isingroup',(req,res) =>{
+app.post('/search/isgroup',(req,res) =>{
     search.isInGroup(req,res);
 })
 

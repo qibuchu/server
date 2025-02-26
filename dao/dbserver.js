@@ -226,7 +226,7 @@ exports.searchGroup = function(data,res){
 
 
 //判断是否在群内
-exports.ifGroup = function(uid,gid,res){
+exports.isInGroup = function(uid,gid,res){
 
     let wherestr = {'userID':uid,'groupID':gid}
     GroupUser.findOne(wherestr,function(err,result)
