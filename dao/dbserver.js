@@ -985,7 +985,7 @@ exports.gmsg = function(data,res){
     
     let query = GroupMsg.find();
         //查询条件
-    query.where({'userID':data.uid,'groupID':data.gid});
+    query.where({'groupID':data.gid});
 
     //排序方式 最有通讯时间倒序排列
     query.sort({'time':- 1});
